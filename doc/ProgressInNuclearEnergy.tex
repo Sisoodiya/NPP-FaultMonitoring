@@ -1,0 +1,88 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\title{Detailed Summary and Analysis of: \\ \textbf{Online Fault Monitoring Based on Deep Neural Network and Sliding Window Technique}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Objective}
+This study presents an \textbf{online fault monitoring system} for Nuclear Power Plants (NPPs) using \textbf{Deep Convolutional Neural Networks (DCNN)} integrated with a \textbf{Sliding Window (SW)} technique. The system aims to enhance diagnostic accuracy, robustness, and reliability across various plant states and fault severities.
+
+\section*{Key Contributions}
+\begin{itemize}
+    \item Proposed a 2D-DCNN based online monitoring system suitable for trend-based time-series data from NPPs.
+    \item Integrated a Sliding Window technique to enable adaptive, real-time feature extraction.
+    \item Demonstrated superiority over SVM, RBFNN through comparative analysis using realistic data sets.
+    \item Employed LSTM for fault severity estimation and incorporated a simulation-based verification mechanism.
+\end{itemize}
+
+\section*{Methodology Overview}
+
+\subsection*{1. Reactor Model: IP-200}
+\begin{itemize}
+    \item A small modular IPWR developed by Harbin Engineering University.
+    \item Thermal-hydraulic simulation performed using RELAP5.
+    \item Validation through steady-state parameter accuracy.
+\end{itemize}
+
+\subsection*{2. Deep Convolutional Neural Network (DCNN)}
+\begin{itemize}
+    \item Multi-layer structure with convolution, batch normalization, ReLU, pooling, and softmax layers.
+    \item Designed for 2D time-series input: Input size = 43x100, Output size = 6 classes.
+    \item Training: SGDM with early stopping; epochs = 50; learning rate = 0.0001.
+\end{itemize}
+
+\subsection*{3. Sliding Window Technique}
+\begin{itemize}
+    \item Dynamically updates network parameters with the most recent plant data.
+    \item Supports adaptability under varying power levels and transient states.
+\end{itemize}
+
+\section*{Performance Comparison}
+
+\subsection*{DCNN vs SVM}
+\begin{itemize}
+    \item In-sample: Both models perform equally well.
+    \item Out-sample: SVM misclassifies 257/600 cases due to sensitivity to minor noise; DCNN maintains accuracy.
+\end{itemize}
+
+\subsection*{LSTM vs RBFNN for Severity Estimation}
+\begin{itemize}
+    \item In-sample MSE: LSTM = 1.81e-4, RBFNN = 2.11e-4
+    \item Out-sample MSE: LSTM = 7.58e-4, RBFNN = 0.11
+\end{itemize}
+
+\section*{Proposed Fault Monitoring Architecture}
+\begin{enumerate}
+    \item \textbf{Offline Training}: Data sorted and normalized, CNN trained.
+    \item \textbf{Online Monitoring}: Incoming data preprocessed; CNN detects faults.
+    \item \textbf{Severity Analysis}: Corresponding LSTM model estimates fault severity.
+    \item \textbf{Verification}: Simulator compares real plant data with predicted outcomes to compute MSE.
+\end{enumerate}
+
+\section*{Experimental Scenarios}
+\begin{itemize}
+    \item 5 fault classes simulated at different power levels.
+    \item Test cases: e.g., SGTR at 68\% power with 14\% severity; PORV stuck at 33\% power with 78\% valve position.
+    \item Achieved MSE: 0.0027 (SGTR), 0.000010384 (PORV).
+\end{itemize}
+
+\section*{Conclusion}
+\begin{itemize}
+    \item The proposed DCNN + SW + LSTM framework demonstrates robust performance under dynamic and noisy conditions.
+    \item Adaptive feature extraction ensures real-time diagnostic capability.
+    \item Validation via simulation reinforces confidence in fault detection and severity estimation.
+    \item Outperforms traditional ML models (SVM, RBFNN) in both accuracy and generalizability.
+\end{itemize}
+
+Future work will aim to integrate this system into live NPPs for real-world validation.
+
+\end{document}

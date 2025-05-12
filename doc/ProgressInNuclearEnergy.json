@@ -1,0 +1,65 @@
+{
+    "title": "Online Fault Monitoring Based on Deep Neural Network and Sliding Window Technique",
+    "objective": "To design a robust real-time fault monitoring system for Nuclear Power Plants using Deep Convolutional Neural Networks (DCNN) and a Sliding Window (SW) technique.",
+    "contributions": [
+      "Applied 2D DCNN for real-time fault detection in nuclear plants.",
+      "Implemented sliding window strategy for adaptive learning.",
+      "Compared with shallow models like SVM and RBFNN.",
+      "Used LSTM for fault severity estimation and validation via simulation."
+    ],
+    "methodology": {
+      "reactor_model": {
+        "name": "IP-200",
+        "type": "Integrated Pressurized Water Reactor",
+        "simulation_tool": "RELAP5"
+      },
+      "dcnn": {
+        "input_size": "43x100",
+        "output_classes": 6,
+        "epochs": 50,
+        "learning_rate": 0.0001,
+        "training_algorithm": "SGDM with early stopping"
+      },
+      "sliding_window": {
+        "purpose": "Adaptive real-time learning",
+        "function": "Update model parameters with recent plant data"
+      }
+    },
+    "performance_comparison": {
+      "cnn_vs_svm": {
+        "in_sample_accuracy": "equal",
+        "out_sample_wrong_categorizations": {"CNN": 0, "SVM": 257}
+      },
+      "lstm_vs_rbfnn": {
+        "mse_in_sample": {"LSTM": 0.000181, "RBFNN": 0.000211},
+        "mse_out_sample": {"LSTM": 0.000758, "RBFNN": 0.11}
+      }
+    },
+    "application_model": {
+      "offline_training": "Sort, normalize, train DCNN",
+      "online_monitoring": "Preprocess, diagnose with CNN",
+      "severity_analysis": "Apply fault-specific LSTM",
+      "verification": "Compare simulator output with real plant data (MSE)"
+    },
+    "experimental_scenarios": [
+      {
+        "fault": "Steam Generator Tube Rupture",
+        "power": "68%",
+        "severity": "14%",
+        "mse": 0.0027
+      },
+      {
+        "fault": "Pressurizer PORV stuck open",
+        "power": "33%",
+        "valve_position": "78%",
+        "mse": 0.000010384
+      }
+    ],
+    "conclusion": [
+      "DCNN combined with SW and LSTM shows high diagnostic reliability under noisy and dynamic conditions.",
+      "Superior generalization over shallow models.",
+      "Validation through simulation increases operator confidence.",
+      "Future focus: deployment in live NPP environments."
+    ]
+  }
+  

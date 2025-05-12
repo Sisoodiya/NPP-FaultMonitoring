@@ -1,0 +1,102 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\title{Detailed Summary and Analysis of: \\ \textbf{Intelligent Fault Monitoring and Reliability Analysis in Safety--Critical Systems of Nuclear Power Plants Using SIAO-CNN-ORNN}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Objective}
+This paper proposes a novel deep learning-based model, \textbf{SIAO-CNN-ORNN}, to detect faults and predict the reliability of Instrumentation and Control (I\&C) systems in Nuclear Power Plants (NPPs). The model integrates:
+\begin{itemize}
+    \item Convolutional Neural Networks (CNN) for feature learning,
+    \item Optimized Recurrent Neural Networks (ORNN) for temporal analysis,
+    \item Self-Improved Aquila Optimizer (SIAO) for parameter optimization.
+\end{itemize}
+
+\section*{Key Contributions}
+\begin{itemize}
+    \item Introduced a hybrid deep learning model (CNN + ORNN) for fault monitoring.
+    \item Proposed \textbf{Weighted Kurtosis and Skewness (WKS)} for enhanced feature extraction.
+    \item Implemented the Self-Improved Aquila Optimizer (SIAO) to improve RNN weight updates.
+    \item Demonstrated system reliability estimation based on failure rate, MTTF, and dynamic analysis.
+\end{itemize}
+
+\section*{Methodology Overview}
+
+\subsection*{1. Data Acquisition}
+Simulation data from the IP-200 modular reactor using RELAP5 covering:
+\begin{itemize}
+    \item Steady state
+    \item Pressurizer PORV stuck open
+    \item Steam generator tube rupture
+    \item Feedwater line break
+    \item Reactor coolant pump (RCP) failure
+\end{itemize}
+
+\subsection*{2. Data Pre-processing}
+Cleaning, removing redundancy, handling missing/null values.
+
+\subsection*{3. Feature Extraction}
+Statistical operations including:
+\begin{itemize}
+    \item Mean, Median, SD, Variance
+    \item Skewness, Kurtosis
+    \item \textbf{Weighted Kurtosis and Skewness (WKS)} optimized using Aquila Optimizer
+\end{itemize}
+
+\subsection*{4. Hybrid Model: CNN + ORNN}
+\begin{itemize}
+    \item \textbf{CNN:} Automated feature extraction from input data.
+    \item \textbf{RNN:} Processes sequential temporal data.
+    \item \textbf{SIAO:} Optimizes RNN weights via chaotic-enhanced Aquila optimization.
+\end{itemize}
+
+\section*{Self-Improved Aquila Optimizer (SIAO)}
+\begin{itemize}
+    \item Simulates four hunting behaviors: expanded/narrowed exploration and exploitation.
+    \item Uses chaotic maps to improve exploration and avoid local minima.
+    \item Objective function: Root Mean Square Error (RMSE)
+\end{itemize}
+
+\section*{Reliability Estimation}
+\textbf{Key formulas:}
+\begin{align*}
+\text{Failure Rate (}\lambda\text{)} &= \frac{\text{Number of Failures}}{\text{Operating Time}} \\
+\text{Reliability} &= 1 - \lambda \\
+\text{MTTF} &= \frac{1}{\lambda} \\
+\text{Reliability over Time} &= e^{-T/\text{MTTF}}
+\end{align*}
+
+\section*{Results and Evaluation}
+\textbf{Performance Comparison:}
+\begin{itemize}
+    \item Accuracy: \textbf{98.74\%} (SIAO-CNN-ORNN)
+    \item Sensitivity: 0.9538\quad Specificity: 0.9885
+    \item F1-Measure: 0.9538\quad MCC: 0.9423
+    \item RMSE: 0.00891\quad MAE: 0.0312
+\end{itemize}
+
+\textbf{Comparison with other techniques:}
+\begin{itemize}
+    \item CNN-RNN: Accuracy = 96.23\%
+    \item CNN: 93.12\% \quad Bi-LSTM: 94.05\% \quad LSTM: 91.18\%
+\end{itemize}
+
+\section*{Conclusion}
+The proposed SIAO-CNN-ORNN model successfully integrates deep learning and metaheuristic optimization to:
+\begin{itemize}
+    \item Enhance fault detection in safety-critical NPP systems
+    \item Dynamically predict and monitor reliability metrics
+    \item Outperform existing models in accuracy and robustness
+\end{itemize}
+This makes it a powerful tool for future deployment in nuclear I\&C systems to ensure safe and efficient operation.
+
+\end{document}

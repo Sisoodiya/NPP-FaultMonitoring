@@ -1,0 +1,36 @@
+# Core data science packages
+numpy==1.23.5  # Specific version for TensorFlow compatibility
+pandas==1.5.3
+matplotlib==3.7.1
+seaborn==0.12.2
+scikit-learn==1.2.2
+scipy==1.10.1
+joblib==1.2.0
+
+# Deep learning packages
+# For Mac users, especially with M1/M2 chips:
+tensorflow-macos==2.12.0  # Mac-specific TensorFlow
+tensorflow-metal==0.8.0   # GPU acceleration on Mac
+
+# For non-Mac users, uncomment the following line instead:
+# tensorflow==2.12.0
+
+# Signal processing
+pywavelets==1.4.1  # For wavelet transforms
+
+# Data handling
+openpyxl==3.1.2  # For Excel file support
+imbalanced-learn==0.10.1  # For SMOTE
+
+# Visualization
+graphviz==0.20.1  # For model visualization
+pydot==1.4.2  # For Keras model plotting
+
+# Utilities
+tqdm==4.65.0
+argparse>=1.4.0
+jupyter  # For notebook support
+
+# Project-specific dependencies
+# These are custom modules that should be in the project directory
+# No installation required for these

@@ -1,1 +1,17 @@
 myenv/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/

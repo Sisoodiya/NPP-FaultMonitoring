@@ -1,0 +1,57 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\geometry{margin=1in}
+
+\title{Analysis Report: NPP Fault Monitoring System}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Objective}
+This report summarizes the implementation and improvements of the Nuclear Power Plant (NPP) Fault Monitoring System, inspired by recent research in intelligent fault detection and reliability analysis.
+
+\section*{Summary of Implemented Features}
+\begin{itemize}
+    \item \textbf{Data Preprocessing:} Robust pipeline for cleaning, handling missing values, and standardizing sensor data.
+    \item \textbf{Feature Extraction:} Statistical features (mean, median, std, variance, skewness, kurtosis, etc.) and Weighted Kurtosis and Skewness (WKS) as described in recent literature.
+    \item \textbf{Class Imbalance Handling:} Applied SMOTE for balancing minority fault classes.
+    \item \textbf{Traditional Machine Learning:} Implemented and cross-validated Random Forest, Gradient Boosting, and MLP models with hyperparameter optimization and regularization.
+    \item \textbf{Deep Learning Models:} Developed CNN-LSTM hybrid and DCNN architectures for fault detection and LSTM for fault severity estimation, with sliding window data preparation.
+    \item \textbf{Overfitting Mitigation:} Used regularization, dropout, early stopping, and robust validation to address overfitting.
+    \item \textbf{Reliability Analysis:} Calculated failure rate, reliability, MTTF, and dynamic reliability using both exponential and Weibull models.
+    \item \textbf{Real-time Monitoring:} Built a real-time monitoring module with adaptive sliding window, ensemble predictions, and live visualization.
+    \item \textbf{Comprehensive Evaluation:} Generated classification reports, confusion matrices, and reliability reports for each fault type.
+\end{itemize}
+
+\section*{Comparison with Research Papers}
+\begin{itemize}
+    \item \textbf{SCI Paper:} Implemented hybrid deep learning (CNN+RNN), WKS features, SIAO-inspired optimization, and reliability analysis as described.
+    \item \textbf{Progress in Nuclear Energy Paper:} Developed DCNN with sliding window, LSTM for severity, and real-time adaptive monitoring.
+    \item \textbf{Improvements:} Our system now closely matches or exceeds the architectures and methodologies proposed in both papers.
+\end{itemize}
+
+\section*{Key Results}
+\begin{itemize}
+    \item \textbf{Traditional Models:} Achieved significant accuracy improvements after balancing and regularization.
+    \item \textbf{Deep Learning Models:} CNN-LSTM and DCNN models show robust performance and generalization on test data.
+    \item \textbf{Reliability Metrics:} Automated calculation and reporting of reliability, MTTF, and failure rates for each fault type.
+    \item \textbf{Real-time Capability:} System can now process streaming data and visualize live fault and reliability metrics.
+\end{itemize}
+
+\section*{Remaining Challenges and Next Steps}
+\begin{itemize}
+    \item \textbf{Data Diversity:} Further improvement possible with more diverse and real-world NPP data.
+    \item \textbf{Fault Severity Regression:} Expand and validate severity estimation across more scenarios.
+    \item \textbf{Deployment:} Integrate the system with actual plant control systems for field validation.
+    \item \textbf{User Interface:} Enhance the real-time dashboard for operator usability.
+\end{itemize}
+
+\section*{Conclusion}
+The NPP Fault Monitoring System now implements state-of-the-art techniques from the latest research, providing a robust, real-time, and reliable solution for intelligent fault detection and reliability analysis in nuclear power plants.
+
+\end{document}

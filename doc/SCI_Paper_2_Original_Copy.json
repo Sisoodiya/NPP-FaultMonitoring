@@ -1,0 +1,64 @@
+{
+    "title": "Intelligent Fault Monitoring and Reliability Analysis in Safety-Critical Systems of Nuclear Power Plants Using SIAO-CNN-ORNN",
+    "objective": "To propose a deep learning model (SIAO-CNN-ORNN) that efficiently detects faults and performs reliability analysis for I&C systems in nuclear power plants.",
+    "contributions": [
+      "Hybrid deep learning model combining CNN and optimized RNN",
+      "Weighted Kurtosis and Skewness (WKS) for feature extraction",
+      "Self-Improved Aquila Optimizer (SIAO) for RNN weight optimization",
+      "Dynamic reliability analysis using statistical metrics like MTTF"
+    ],
+    "methodology": {
+      "data_acquisition": "Simulated data using RELAP5 for IP-200 reactor under various failure scenarios",
+      "data_preprocessing": "Cleaning and handling null/missing values",
+      "feature_extraction": {
+        "statistical_features": ["mean", "median", "standard deviation", "variance"],
+        "advanced_features": ["weighted kurtosis", "weighted skewness"]
+      },
+      "model_architecture": {
+        "cnn": "Extracts spatial features",
+        "rnn": "Handles time-series sequences",
+        "siao": "Optimizes RNN using chaotic Aquila Optimizer"
+      }
+    },
+    "siao_optimizer": {
+      "stages": [
+        "Expanded exploration",
+        "Narrowed exploration",
+        "Expanded exploitation",
+        "Narrowed exploitation"
+      ],
+      "objective_function": "Root Mean Square Error (RMSE)"
+    },
+    "reliability_analysis": {
+      "formulas": {
+        "failure_rate": "failures / operating_time",
+        "reliability": "1 - failure_rate",
+        "mttf": "1 / failure_rate",
+        "dynamic_reliability": "e^(-T/MTTF)"
+      },
+      "results": [
+        {"time": 20, "failure_rate": 0.005263, "mttf": 190, "reliability": 0.9001},
+        {"time": 40, "failure_rate": 0.002125, "mttf": 470.5, "reliability": 0.9185},
+        {"time": 100, "failure_rate": 0.001061, "mttf": 942.4, "reliability": 0.8993}
+      ]
+    },
+    "performance_evaluation": {
+      "metrics": {
+        "accuracy": 0.9874,
+        "sensitivity": 0.9538,
+        "specificity": 0.9885,
+        "f_measure": 0.9538,
+        "mcc": 0.9423,
+        "rmse": 0.00891,
+        "mae": 0.0312
+      },
+      "comparative_models": [
+        {"model": "CNN-RNN", "accuracy": 0.9623},
+        {"model": "CNN", "accuracy": 0.9312},
+        {"model": "LSTM", "accuracy": 0.9118},
+        {"model": "Bi-LSTM", "accuracy": 0.9405}
+      ]
+    },
+    "conclusion": "SIAO-CNN-ORNN significantly improves fault detection and dynamic reliability prediction in safety-critical nuclear systems through hybrid deep learning and metaheuristic optimization."
+  }
+  
