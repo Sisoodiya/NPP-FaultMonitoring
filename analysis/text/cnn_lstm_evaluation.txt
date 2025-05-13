@@ -1,0 +1,37 @@
+Model: CNN_LSTM
+Training time: 636.41 seconds
+
+Test Metrics:
+Accuracy: 0.5778
+Precision: 0.6158
+Recall: 0.5778
+F1 Score: 0.5413
+
+Classification Report:
+                  precision    recall  f1-score   support
+
+ feedwater_break       1.00      0.11      0.20         9
+    power_change       0.00      0.00      0.00         3
+pressurizer_porv       0.50      0.65      0.57        26
+    pump_failure       0.75      0.27      0.40        11
+ sg_tube_rupture       0.74      0.89      0.81        28
+    steady_state       0.35      0.46      0.40        13
+
+        accuracy                           0.58        90
+       macro avg       0.56      0.40      0.40        90
+    weighted avg       0.62      0.58      0.54        90
+
+Confusion Matrix:
+[[ 1  0  4  1  0  3]
+ [ 0  0  2  0  0  1]
+ [ 0  0 17  0  6  3]
+ [ 0  0  2  3  2  4]
+ [ 0  0  3  0 25  0]
+ [ 0  0  6  0  1  6]]
+
+Model Parameters:
+dropout: 0.3
+l2_reg: 0.001
+learning_rate: 0.001
+window_size: 50
+step_size: 25

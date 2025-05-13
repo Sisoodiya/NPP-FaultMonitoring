@@ -1,0 +1,41 @@
+Model: SIAO_ENHANCED
+Training time: 581.36 seconds
+
+Test Metrics:
+Accuracy: 0.6000
+Precision: 0.7364
+Recall: 0.6000
+F1 Score: 0.5600
+
+Classification Report:
+                  precision    recall  f1-score   support
+
+ feedwater_break       1.00      0.22      0.36         9
+    power_change       0.00      0.00      0.00         3
+pressurizer_porv       0.44      0.88      0.59        26
+    pump_failure       1.00      0.64      0.78        11
+ sg_tube_rupture       0.78      0.75      0.76        28
+    steady_state       1.00      0.08      0.14        13
+
+        accuracy                           0.60        90
+       macro avg       0.70      0.43      0.44        90
+    weighted avg       0.74      0.60      0.56        90
+
+Confusion Matrix:
+[[ 2  0  7  0  0  0]
+ [ 0  0  3  0  0  0]
+ [ 0  0 23  0  3  0]
+ [ 0  0  2  7  2  0]
+ [ 0  0  7  0 21  0]
+ [ 0  1 10  0  1  1]]
+
+Model Parameters:
+dropout: 0.4
+l2_reg: 0.0005
+learning_rate: 0.001
+window_size: 50
+step_size: None
+attention_units: 256
+filters_multiplier: 1.5
+dense_units_multiplier: 1.5
+num_heads: 4
