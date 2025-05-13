@@ -18,10 +18,23 @@ def load_data(data_path='data', pattern='**/*.xlsx', recursive=True):
     Returns:
         dict: Dictionary of dataframes with filenames as keys
     """
-    data_files = glob.glob(os.path.join(data_path, pattern), recursive=recursive)
+    # Make sure we're using absolute paths
+    abs_data_path = os.path.abspath(data_path)
+    print(f"Looking for Excel files in: {abs_data_path}")
+    
+    # List all files in the directory
+    all_files = []
+    for root, dirs, files in os.walk(abs_data_path):
+        if 'processed' in dirs:
+            dirs.remove('processed')  # Skip processed directory
+        for file in files:
+            if file.endswith('.xlsx'):
+                all_files.append(os.path.join(root, file))
+    
+    print(f"Found {len(all_files)} Excel files")
     data_dict = {}
     
-    for file in data_files:
+    for file in all_files:
         filename = os.path.basename(file)
         try:
             df = pd.read_excel(file)
@@ -30,6 +43,7 @@ def load_data(data_path='data', pattern='**/*.xlsx', recursive=True):
         except Exception as e:
             print(f"Error loading {filename}: {e}")
     
+    print(f"Successfully loaded {len(data_dict)} files")
     return data_dict
 
 

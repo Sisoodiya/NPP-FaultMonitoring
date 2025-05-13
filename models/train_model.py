@@ -27,9 +27,14 @@ from model_cnn_lstm import build_cnn_lstm as build_hybrid_model
 
 # Import new components
 from feature_extraction_new import extract_statistical_features, extract_all_features
-from model_siao_cnn_ornn import build_siao_cnn_ornn, train_siao_cnn_ornn, AquilaOptimizerCallback
+# Import both standard and enhanced SIAO models from the combined file
+from model_siao_cnn_ornn import build_siao_cnn_ornn, train_siao_cnn_ornn, build_siao_enhanced, train_siao_enhanced, AquilaOptimizerCallback, IS_APPLE_SILICON
 from dynamic_reliability import analyze_reliability, plot_reliability_curve, generate_reliability_report
 from adaptive_learning import AdaptiveModelUpdater, AdaptiveOnlineFaultMonitor
+
+# Enable Metal plugin for better performance on M1/M2 Macs
+import os
+os.environ['TF_METAL_ENABLED'] = '1'
 
 # Try to import SIAO optimizer
 try:
@@ -114,7 +119,8 @@ def train_model(X_train, y_train, X_val, y_val, model_type='cnn', model_name=Non
         'lstm': ['dropout_rate', 'recurrent_dropout', 'l2_reg', 'learning_rate'],
         'cnn_rnn': ['dropout_rate', 'recurrent_dropout', 'l2_reg', 'learning_rate', 'use_gru'],
         'cnn_lstm': ['dropout_rate', 'recurrent_dropout', 'l2_reg', 'learning_rate'],
-        'siao': ['dropout_rate', 'l2_reg', 'use_gru']
+        'siao': ['dropout_rate', 'l2_reg', 'use_gru'],
+        'siao_enhanced': ['dropout_rate', 'l2_reg', 'use_gru', 'attention_units', 'filters_multiplier', 'dense_units_multiplier', 'num_heads']
     }
     
     # Filter out parameters that aren't allowed for the specific model type
@@ -160,12 +166,65 @@ def train_model(X_train, y_train, X_val, y_val, model_type='cnn', model_name=Non
             **filtered_params
         )
     elif model_type == 'siao':
+        # Import platform to detect Apple Silicon
+        import platform
+        is_apple_silicon = platform.processor() == 'arm' and platform.system() == 'Darwin'
+        
+        # On M1/M2 Macs, use LSTM instead of GRU for better performance
+        use_gru = False if is_apple_silicon else True
+        
+        print(f"Building SIAO-CNN-ORNN model with {'LSTM' if not use_gru else 'GRU'} cells (optimized for {'Apple Silicon' if is_apple_silicon else 'standard hardware'})")
+        
+        # Set dropout rate higher for better regularization
+        if 'dropout_rate' not in filtered_params:
+            filtered_params['dropout_rate'] = 0.4
+            
+        # Apple Silicon optimization is handled in the model_siao_cnn_ornn.py file
+        # We don't need to pass recurrent_dropout here
+            
         model, history = train_siao_cnn_ornn(
             X_train, y_train, X_val, y_val, 
             input_shape=input_shape, num_classes=num_classes,
             epochs=epochs, batch_size=batch_size, class_weights=class_weights,
             use_aquila_optimizer=use_aquila_optimizer,
-            use_gru=True,  # Use GRU for better performance
+            use_gru=use_gru,  # Use LSTM on M1/M2 Macs, GRU otherwise
+            **filtered_params
+        )
+    elif model_type == 'siao_enhanced':
+        # Import platform to detect Apple Silicon
+        import platform
+        is_apple_silicon = platform.processor() == 'arm' and platform.system() == 'Darwin'
+        
+        # On M1/M2 Macs, use LSTM instead of GRU for better performance
+        use_gru = False if is_apple_silicon else True
+        
+        print(f"Building Enhanced SIAO model with {'LSTM' if not use_gru else 'GRU'} cells (optimized for {'Apple Silicon' if is_apple_silicon else 'standard hardware'})")
+        
+        # Set default parameters if not provided
+        if 'dropout_rate' not in filtered_params:
+            filtered_params['dropout_rate'] = 0.4
+        if 'l2_reg' not in filtered_params:
+            filtered_params['l2_reg'] = 0.0005
+        if 'attention_units' not in filtered_params:
+            filtered_params['attention_units'] = 256
+        if 'filters_multiplier' not in filtered_params:
+            filtered_params['filters_multiplier'] = 1.5
+        if 'dense_units_multiplier' not in filtered_params:
+            filtered_params['dense_units_multiplier'] = 1.5
+        if 'num_heads' not in filtered_params:
+            filtered_params['num_heads'] = 4
+            
+        print(f"Enhanced SIAO parameters:")
+        print(f"  - Attention units: {filtered_params['attention_units']}")
+        print(f"  - Filters multiplier: {filtered_params['filters_multiplier']}")
+        print(f"  - Dense units multiplier: {filtered_params['dense_units_multiplier']}")
+        print(f"  - Number of attention heads: {filtered_params['num_heads']}")
+            
+        model, history = train_siao_enhanced(
+            X_train, y_train, X_val, y_val, 
+            input_shape=input_shape, num_classes=num_classes,
+            epochs=epochs, batch_size=batch_size, class_weights=class_weights,
+            use_gru=use_gru,  # Use LSTM on M1/M2 Macs, GRU otherwise
             **filtered_params
         )
     else:
@@ -251,7 +310,8 @@ def plot_training_history(history, model_name):
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Train a model for NPP fault monitoring')
-    parser.add_argument('--model', type=str, default='cnn', choices=['cnn', 'rnn', 'lstm', 'cnn_rnn', 'cnn_lstm', 'siao'],
+    parser.add_argument('--model', type=str, default='cnn', 
+                        choices=['cnn', 'rnn', 'lstm', 'cnn_rnn', 'cnn_lstm', 'siao', 'siao_enhanced'],
                         help='Model type to train')
     parser.add_argument('--window_size', type=int, default=100, help='Window size for sliding window')
     parser.add_argument('--step_size', type=int, default=None, help='Step size for sliding window')
@@ -260,6 +320,9 @@ if __name__ == "__main__":
     parser.add_argument('--test_size', type=float, default=0.2, help='Proportion of data to use for testing')
     parser.add_argument('--val_size', type=float, default=0.2, help='Proportion of training data to use for validation')
     parser.add_argument('--balance', action='store_true', help='Whether to balance classes using SMOTE')
+    parser.add_argument('--dropout', type=float, default=0.3, help='Dropout rate for regularization')
+    parser.add_argument('--l2_reg', type=float, default=0.001, help='L2 regularization factor')
+    parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for optimizer')
     parser.add_argument('--use_advanced_features', action='store_true', help='Whether to use advanced feature extraction')
     parser.add_argument('--include_wks', action='store_true', help='Whether to include WKS features (only used with advanced features)')
     parser.add_argument('--optimize_wks', action='store_true', help='Whether to optimize WKS weights using SIAO')
@@ -268,6 +331,12 @@ if __name__ == "__main__":
     parser.add_argument('--reliability_analysis', action='store_true', help='Whether to perform detailed reliability analysis')
     parser.add_argument('--feature_window', type=int, default=100, help='Window size for feature extraction')
     parser.add_argument('--feature_step', type=int, default=50, help='Step size for feature extraction')
+    
+    # Enhanced SIAO model parameters
+    parser.add_argument('--attention_units', type=int, default=256, help='Number of units in attention layer (for enhanced SIAO)')
+    parser.add_argument('--filters_multiplier', type=float, default=1.5, help='Multiplier for number of filters in CNN layers (for enhanced SIAO)')
+    parser.add_argument('--dense_units_multiplier', type=float, default=1.5, help='Multiplier for number of units in dense layers (for enhanced SIAO)')
+    parser.add_argument('--num_heads', type=int, default=4, help='Number of attention heads (for enhanced SIAO)')
     
     args = parser.parse_args()
 
@@ -402,18 +471,24 @@ if __name__ == "__main__":
     step_size = args.step_size
     print(f"\nCreating sliding windows (size={window_size}, step={step_size})...")
 
-    def prepare_sliding_window_data(data, window_size, step_size):
+    def prepare_sliding_window_data(data, window_size, step_size=None):
         """Create sliding windows from time series data.
         
         Args:
             data: Input data (samples, features)
             window_size: Size of each window
-            step_size: Step size between windows
+            step_size: Step size between windows (default: window_size//2)
             
         Returns:
             tuple: (windowed_data, window_indices)
         """
         n_samples, n_features = data.shape
+        
+        # Set default step size if None
+        if step_size is None:
+            step_size = window_size // 2
+            print(f"Step size not specified, using default: {step_size}")
+        
         n_windows = (n_samples - window_size) // step_size + 1
         
         # Initialize arrays
@@ -433,21 +508,24 @@ if __name__ == "__main__":
         """Create sliding windows for time series data."""
         if isinstance(X, pd.DataFrame):
             X = X.values
+        
+        # Use default step_size if None
+        current_step_size = step_size if step_size is not None else window_size // 2
             
-        X_windows, _ = prepare_sliding_window_data(X, window_size, step_size)
+        X_windows, _ = prepare_sliding_window_data(X, window_size, current_step_size)
         
         # Create one-hot encoded labels for each window
         if len(y.shape) == 1:  # If y is not one-hot encoded
             n_classes = len(np.unique(y))
             y_windows = np.zeros((X_windows.shape[0], n_classes))
             for i in range(X_windows.shape[0]):
-                start_idx = i * step_size
+                start_idx = i * current_step_size
                 if start_idx < len(y):
                     y_windows[i] = np.eye(n_classes)[y[start_idx]]
         else:  # If y is already one-hot encoded
             y_windows = np.zeros((X_windows.shape[0], y.shape[1]))
             for i in range(X_windows.shape[0]):
-                start_idx = i * step_size
+                start_idx = i * current_step_size
                 if start_idx < len(y):
                     y_windows[i] = y[start_idx]
                     
@@ -455,7 +533,8 @@ if __name__ == "__main__":
 
     # Create windowed data for training, validation, and testing
     if not args.use_advanced_features:  # Only create windows for raw data
-        print(f"\nCreating sliding windows with window_size={args.window_size}, step_size={args.step_size}...")
+        step_size_display = args.step_size if args.step_size is not None else f"{args.window_size//2} (default)"
+        print(f"\nCreating sliding windows with window_size={args.window_size}, step_size={step_size_display}...")
         
         if isinstance(X_train, pd.DataFrame):
             X_train_values = X_train.values
@@ -519,6 +598,20 @@ if __name__ == "__main__":
         'window_size': args.window_size,
         'step_size': args.step_size
     }
+    
+    # Add enhanced SIAO model parameters if applicable
+    if args.model == 'siao_enhanced':
+        model_params.update({
+            'attention_units': args.attention_units,
+            'filters_multiplier': args.filters_multiplier,
+            'dense_units_multiplier': args.dense_units_multiplier,
+            'num_heads': args.num_heads
+        })
+        print(f"Using enhanced SIAO model with increased parameters:")
+        print(f"  - Attention units: {args.attention_units}")
+        print(f"  - Filters multiplier: {args.filters_multiplier}")
+        print(f"  - Dense units multiplier: {args.dense_units_multiplier}")
+        print(f"  - Number of attention heads: {args.num_heads}")
     
     start_time = time.time()
     trained_model, history = train_model(
