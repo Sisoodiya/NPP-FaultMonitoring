@@ -1,4 +1,4 @@
-myenv/
+venv/
 
 # Ignore system files
 .DS_Store
